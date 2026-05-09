@@ -439,13 +439,32 @@ class FlareonCharacter extends Character
 		{
 			var px:Float = matrix.a * point.x + matrix.c * point.y + matrix.tx;
 			var py:Float = matrix.b * point.x + matrix.d * point.y + matrix.ty;
-			if (px < bounds.x)
+			var right:Float = bounds.right;
+			var bottom:Float = bounds.bottom;
+
+			if (bounds.x == Math.POSITIVE_INFINITY)
+			{
 				bounds.x = px;
-			if (py < bounds.y)
 				bounds.y = py;
-			if (px > bounds.right)
+				bounds.width = 0;
+				bounds.height = 0;
+				continue;
+			}
+
+			if (px < bounds.x)
+			{
+				bounds.x = px;
+				bounds.width = right - px;
+			}
+			else if (px > right)
 				bounds.width = px - bounds.x;
-			if (py > bounds.bottom)
+
+			if (py < bounds.y)
+			{
+				bounds.y = py;
+				bounds.height = bottom - py;
+			}
+			else if (py > bottom)
 				bounds.height = py - bounds.y;
 		}
 	}
