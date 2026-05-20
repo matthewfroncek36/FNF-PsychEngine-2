@@ -523,7 +523,7 @@ class Note extends FlxSprite {
 		return texture != null && texture.toLowerCase().contains('3d');
 
 	public static function is2DNoteTexture(texture:String):Bool
-		return texture != null && defaultNoteSkin;
+		return texture != null && texture.toLowerCase().contains('noteSkins/NOTE_assets')
 
 	public static function getProfileForTexture(texture:String, ?keyCount:Int = 4):Array<String> {
 		if (!is3DNoteTexture(texture))
