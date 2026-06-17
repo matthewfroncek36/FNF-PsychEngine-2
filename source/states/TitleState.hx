@@ -186,6 +186,14 @@ class TitleState extends MusicBeatState
 		blackScreen.updateHitbox();
 		credGroup.add(blackScreen);
 
+		var checker:FlxBackdrop = new FlxBackdrop(Paths.image('Grid_lmao'), 0.2, 0.2, true, true); 
+        //checker.velocity.set(112, 110); 
+		checker.updateHitbox(); 
+		checker.scrollFactor.set(0, 0); 
+		checker.alpha = 1; 
+		checker.screenCenter(X); 
+		add(checker); 
+
 		credTextShit = new Alphabet(0, 0, "", true);
 		credTextShit.screenCenter();
 		credTextShit.visible = false;
