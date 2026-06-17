@@ -118,6 +118,7 @@ class TitleState extends MusicBeatState
 	var danceLeft:Bool = false;
 	var titleText:FlxSprite;
 	var swagShader:ColorSwap = null;
+    var checker:FlxBackdrop;
 
 	function startIntro()
 	{
@@ -188,7 +189,7 @@ class TitleState extends MusicBeatState
 		blackScreen.updateHitbox();
 		credGroup.add(blackScreen);
 
-		var checker:FlxBackdrop = new FlxBackdrop(Paths.image('Grid_lmao'), XY, 1, 1); 
+		checker = new FlxBackdrop(Paths.image('Grid_lmao'), XY, 1, 1); 
         //checker.velocity.set(112, 110); 
 		checker.updateHitbox(); 
 		checker.scrollFactor.set(0, 0); 
@@ -332,7 +333,6 @@ class TitleState extends MusicBeatState
 
 	override function update(elapsed:Float)
 	{
-     	var checker:FlxBackdrop;
 		var scrollSpeed:Float = 50;
 		checker.x -= scrollSpeed * elapsed;
 		checker.y -= scrollSpeed * elapsed;
