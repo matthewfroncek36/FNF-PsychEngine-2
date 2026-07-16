@@ -79,6 +79,7 @@ class FlareonCharacter extends Character
 		mouth = new FlxSprite();
 		mouth.makeGraphic(12, 6, 0xFF000000);
 		mouth.antialiasing = false;
+		mouth.visible = false;
 		fireball = new FlxSprite();
 		makeFireballGraphic();
 		fireball.antialiasing = false;
