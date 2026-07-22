@@ -68,7 +68,7 @@ jobs:
               haxelib install lime
               haxelib set lime `haxelib version lime`
 
-              # Remove Intel NDLLs
+              # Remove Intel-only NDLLs
               rm -rf ~/haxelib/lime/*/ndll/Mac64
 
               # Rebuild ARM64 NDLLs
