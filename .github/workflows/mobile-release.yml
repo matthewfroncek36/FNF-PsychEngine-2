@@ -41,14 +41,19 @@ jobs:
           - name: Android
             os: macos-15
             setupCommand: |
+              # Install Haxe libraries
               sh ./setup/unix.sh
+
+              # Install Android SDK + NDK
               brew install --cask android-sdk
               brew install --cask android-ndk
 
               export ANDROID_SDK=/usr/local/share/android-sdk
               export ANDROID_NDK=/usr/local/share/android-ndk
 
+              # Lime Android setup
               haxelib run lime setup android
+
             buildArgs: "android -final -D officialBuild"
             artifactName: androidBuild
             artifactPath: "export/release/android/bin/app/build/outputs/apk/release/*.apk"
@@ -56,8 +61,19 @@ jobs:
           - name: iOS
             os: macos-15
             setupCommand: |
+              # Install Haxe libraries
               sh ./setup/unix.sh
+
+              # Ensure Lime is installed BEFORE rebuilding NDLLs
+              haxelib install lime
+              haxelib set lime `haxelib version lime`
+
+              # Remove Intel NDLLs
+              rm -rf ~/haxelib/lime/*/ndll/Mac64
+
+              # Rebuild ARM64 NDLLs
               haxelib run lime rebuild macos
+
             buildArgs: "ios -final -nosign -D officialBuild"
             artifactName: iOSBuild
             artifactPath: "export/release/ios/build/Release-iphoneos/*.ipa"
