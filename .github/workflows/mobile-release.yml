@@ -42,6 +42,13 @@ jobs:
             os: macos-15
             setupCommand: |
               sh ./setup/unix.sh
+              brew install --cask android-sdk
+              brew install --cask android-ndk
+
+              export ANDROID_SDK=/usr/local/share/android-sdk
+              export ANDROID_NDK=/usr/local/share/android-ndk
+
+              haxelib run lime setup android
             buildArgs: "android -final -D officialBuild"
             artifactName: androidBuild
             artifactPath: "export/release/android/bin/app/build/outputs/apk/release/*.apk"
