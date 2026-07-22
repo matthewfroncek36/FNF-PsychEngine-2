@@ -18,22 +18,19 @@ jobs:
       commit_hash: ${{ steps.get_commit_hash.outputs.COMMIT_HASH }}
 
     steps:
-      - name: Check Repository
+      - name: Validate Repository
         run: |
           echo "GITHUB_REPOSITORY:${GITHUB_REPOSITORY}"
           echo "REPO_PATH: ${{ env.REPO_PATH }}"
           if [[ "$GITHUB_REPOSITORY" != "${{ env.REPO_PATH }}" ]]; then
-            echo "Doesn't seem to be correct, returning SIGABRT..."
+            echo "Repository mismatch, aborting..."
             exit 6
-          else
-            echo "Seems to be correct..."
           fi
 
       - name: Get latest commit hash
         id: get_commit_hash
         run: |
           commit_hash=${GITHUB_SHA::7}
-          echo "Latest commit hash is $commit_hash"
           echo "::set-output name=COMMIT_HASH::$commit_hash"
 
   build:
@@ -52,7 +49,10 @@ jobs:
 
           - name: iOS
             os: macos-15
-            setupCommand: sh ./setup/unix.sh
+            setupCommand: |
+              sh ./setup/unix.sh
+              # FIX: Rebuild Lime NDLLs for ARM64 macOS runners
+              haxelib run lime rebuild macos
             buildArgs: "ios -final -nosign -D officialBuild"
             artifactName: iOSBuild
             artifactPath: "export/release/ios/build/Release-iphoneos/*.ipa"
@@ -61,12 +61,7 @@ jobs:
     with:
       name: ${{ matrix.name }}
       os: ${{ matrix.os }}
-      setupCommand: |
-        ${{ matrix.setupCommand }}
-
-        # FIX: Rebuild Lime NDLLs for ARM64 macOS runners
-        haxelib run lime rebuild macos
-
+      setupCommand: ${{ matrix.setupCommand }}
       buildArgs: ${{ matrix.buildArgs }}
       artifactName: ${{ matrix.artifactName }}
       artifactPath: ${{ matrix.artifactPath }}
@@ -83,7 +78,7 @@ jobs:
           name: androidBuild
           path: /home/runner
 
-      - name: Move Android File
+      - name: Rename Android File
         run: mv /home/runner/${{ env.PROJECT_NAME }}-release.apk /home/runner/${{ env.PROJECT_NAME }}-Android.apk
 
       - name: Download iOS Build
@@ -92,10 +87,10 @@ jobs:
           name: iOSBuild
           path: ${{ github.workspace }}
 
-      - name: Zip iOS Build For Release
+      - name: Zip iOS Build
         run: zip -r /home/runner/${{ env.PROJECT_NAME }}-iOS.zip ${{ github.workspace }}/${{ env.PROJECT_NAME }}.ipa
 
-      - name: Publish The Release
+      - name: Publish Release
         uses: softprops/action-gh-release@v2
         with:
           name: "DevBuild ${{ needs.get-commit-hash.outputs.commit_hash }}"
