@@ -20,8 +20,6 @@ jobs:
     steps:
       - name: Validate Repository
         run: |
-          echo "GITHUB_REPOSITORY:${GITHUB_REPOSITORY}"
-          echo "REPO_PATH: ${{ env.REPO_PATH }}"
           if [[ "$GITHUB_REPOSITORY" != "${{ env.REPO_PATH }}" ]]; then
             echo "Repository mismatch, aborting..."
             exit 6
@@ -42,7 +40,8 @@ jobs:
         include:
           - name: Android
             os: macos-15
-            setupCommand: sh ./setup/unix.sh
+            setupCommand: |
+              sh ./setup/unix.sh
             buildArgs: "android -final -D officialBuild"
             artifactName: androidBuild
             artifactPath: "export/release/android/bin/app/build/outputs/apk/release/*.apk"
@@ -51,7 +50,6 @@ jobs:
             os: macos-15
             setupCommand: |
               sh ./setup/unix.sh
-              # FIX: Rebuild Lime NDLLs for ARM64 macOS runners
               haxelib run lime rebuild macos
             buildArgs: "ios -final -nosign -D officialBuild"
             artifactName: iOSBuild
